@@ -20,7 +20,7 @@ app.use((req, res, next) => {
 })
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname + '/public')));
-app.use(authRoutes);
+app.use('/api', authRoutes);
 
 mongoose.connect(mongodb_uri)
     .then(() => {

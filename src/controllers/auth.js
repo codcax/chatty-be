@@ -1,6 +1,7 @@
 //Node imports
 const bcrypt = require('bcryptjs');
 const validator = require('validator');
+const jwt = require('jsonwebtoken');
 
 //Custom imports
 const User = require('../models/user');
@@ -53,7 +54,7 @@ exports.postSignUp = (req, res, next) => {
             if (user) {
                 return res.status(402).json({
                     type: 'user',
-                    message: 'User already exists.'
+                    message: 'User already exist.'
                 })
             }
             return bcrypt.hash(password, 12)
@@ -71,6 +72,66 @@ exports.postSignUp = (req, res, next) => {
                         result: result
                     });
                 })
+        })
+        .catch(error => {
+            res.status(500).json({
+                error: error
+            })
+        });
+};
+
+exports.postLogin = (req, res, next) => {
+    const email = req.body.email;
+    const password = req.body.password;
+
+    const errors = [];
+
+    if (!email || validator.isEmpty(email) || !validator.isEmail(email)) {
+        errors.push({
+            type: 'email',
+            message: 'Invalid email.'
+        });
+    }
+
+    if (!password || validator.isEmpty(password)) {
+        errors.push({
+            type: 'password',
+            message: 'Invalid password.'
+        });
+    }
+
+    if (errors.length > 0) {
+        return res.status(422).json({
+            message: 'Invalid inputs.',
+            error: errors
+        })
+    }
+
+    let user;
+    User.findOne({email: email})
+        .then(userData => {
+            user = userData;
+            if (!user) {
+                return res.status(401).json({
+                    type: 'user',
+                    message: 'User does not exist.'
+                })
+            }
+            return bcrypt.compare(password, user.password)
+        })
+        .then(result => {
+            if (!result) {
+                return res.status(401).json({
+                    type: 'user',
+                    message: 'Invalid credentials.'
+                })
+            }
+            let error;
+            const token = jwt.sign({email: user.email, userId: user._id}, 'random', {expiresIn: '1hr'})
+            res.status(201).json({
+                message: 'Logged in succesfully.',
+                authToken: token
+            })
         })
         .catch(error => {
             res.status(500).json({
