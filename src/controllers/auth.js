@@ -129,7 +129,7 @@ exports.postLogin = (req, res, next) => {
             let error;
             const token = jwt.sign({email: user.email, userId: user._id}, 'random', {expiresIn: '1hr'})
             res.status(201).json({
-                message: 'Logged in succesfully.',
+                message: 'Logged in successfully.',
                 authToken: token
             })
         })
