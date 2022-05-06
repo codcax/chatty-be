@@ -7,7 +7,7 @@ const path = require('path');
 
 const graphqlSchema = require('./graphql/schemas/schema');
 const graphqlResolver = require('./graphql/resolvers/resolvers');
-const {customGraphQLError} = require('./utils/errors');
+const {graphQLError} = require('./utils/response');
 
 const app = express();
 
@@ -28,7 +28,7 @@ app.use('/graphql', graphqlHTTP({
         rootValue: graphqlResolver,
         graphiql: true,
         customFormatErrorFn(err) {
-            return customGraphQLError(err);
+            return graphQLError(err);
         }
     })
 );

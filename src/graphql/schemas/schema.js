@@ -8,7 +8,7 @@ type User {
   password: String
 }
 type userAuth {
-  userId: ID!
+  _id: ID!
   token: String!
   tokenExpiration: Int!
 }

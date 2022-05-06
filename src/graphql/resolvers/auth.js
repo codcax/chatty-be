@@ -5,7 +5,7 @@ const validator = require('validator');
 
 //Custom imports
 const User = require('../../models/user');
-const {customError} = require('../../utils/errors');
+const {errorResponse, successResponse} = require('../../utils/response');
 
 module.exports = {
     userCreate: async function (args) {
@@ -34,12 +34,12 @@ module.exports = {
             }
 
             if (errors.length > 0) {
-                customError('Invalid inputs.', errors, 422);
+                errorResponse('Invalid inputs.', errors, 422);
             }
 
             const existingUser = await User.findOne({email: email});
             if (existingUser) {
-                customError('User exists already.', null, 422);
+                errorResponse('User exists already.', null, 422);
             }
 
             const hashedPassword = await bcrypt.hash(password, 12);
@@ -48,11 +48,12 @@ module.exports = {
                 username: username,
                 password: hashedPassword
             });
-            const userCreated = await user.save();
-            if (!userCreated) {
-                customError('User account creation failed.', null, 500);
+            const userData = await user.save();
+            if (!userData) {
+                errorResponse('User account creation failed.', null, 500);
             }
-            return {message: 'User account created successfully.'};
+
+            return successResponse('User account created successfully.', userData._doc, 201);
         } catch (error) {
             throw error;
         }
@@ -72,22 +73,24 @@ module.exports = {
             }
 
             if (errors.length > 0) {
-                customError('Invalid inputs.', errors, 422);
+                errorResponse('Invalid inputs.', errors, 422);
             }
 
             const user = await User.findOne({email: email});
             if (!user) {
-                customError('User does not exist.', null, 401);
+                errorResponse('User does not exist.', null, 401);
             }
 
             const matchPassword = await bcrypt.compare(password, user.password);
 
             if (!matchPassword) {
-                customError('Invalid credentials.', null, 422);
+                errorResponse('Invalid credentials.', null, 422);
             }
 
-            const token = await jwt.sign({email: user.email, userId: user._id}, 'random', {expiresIn: '1hr'});
-            return {message: 'Logged in successfully.', token: token};
+            const jwtToken = await jwt.sign({email: user.email, userId: user._id}, 'random', {expiresIn: '1hr'});
+            const data = successResponse('Logged in successfully.', {token: jwtToken, userId: user._id.toString()}, 201)
+            console.log(data)
+            return data;
         } catch (error) {
             throw error;
         }

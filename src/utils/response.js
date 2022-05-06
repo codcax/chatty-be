@@ -1,6 +1,6 @@
 //Node imports
 
-module.exports.customGraphQLError = (gqlerror) => {
+module.exports.graphQLError = (gqlerror) => {
     if (!gqlerror.originalError) {
         return gqlerror;
     }
@@ -11,11 +11,19 @@ module.exports.customGraphQLError = (gqlerror) => {
     return {message: message, status: code, data: data, path: path};
 }
 
-module.exports.customError = (message, data, code) => {
+module.exports.errorResponse = (message, data, code) => {
     const error = new Error(message);
     if (data) {
         error.data = data
     }
     error.status = code;
     throw error;
+}
+
+module.exports.successResponse = (message, data, code) => {
+    return {
+        message: message,
+        status: code,
+        ...data
+    }
 }
