@@ -2,10 +2,14 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const {graphqlHTTP} = require('express-graphql');
 const path = require('path');
 
+const graphqlSchema = require('./graphql/schemas/schema');
+const graphqlResolver = require('./graphql/resolvers/resolvers');
+const {customGraphQLError} = require('./utils/errors');
+
 const app = express();
-const authRoutes = require('./routes/auth');
 
 //.env constants
 const mongodb_uri = process.env.MONGODB_URI;
@@ -19,8 +23,17 @@ app.use((req, res, next) => {
     next();
 })
 app.use(bodyParser.json());
+app.use('/graphql', graphqlHTTP({
+        schema: graphqlSchema,
+        rootValue: graphqlResolver,
+        graphiql: true,
+        customFormatErrorFn(err) {
+            return customGraphQLError(err);
+        }
+    })
+);
 app.use(express.static(path.join(__dirname + '/public')));
-app.use('/api', authRoutes);
+// app.use('/api', authRoutes);
 
 mongoose.connect(mongodb_uri)
     .then(() => {
