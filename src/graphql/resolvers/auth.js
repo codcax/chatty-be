@@ -88,7 +88,7 @@ module.exports = {
             }
 
             const jwtToken = await jwt.sign({email: user.email, userId: user._id}, 'random', {expiresIn: '1hr'});
-            const data = successResponse('Logged in successfully.', {token: jwtToken, userId: user._id.toString()}, 201)
+            const data = successResponse('Logged in successfully.', {token: jwtToken, _id: user._id.toString()}, 201)
             console.log(data)
             return data;
         } catch (error) {
