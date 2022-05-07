@@ -20,6 +20,9 @@ app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', process.env.APIURL);
     res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
     res.setHeader('Access-Control-Allow-Method', 'GET, POST, PATCH, DELETE, PUT, OPTIONS');
+    if(req.method === 'OPTIONS'){
+        return res.sendStatus(200);
+    }
     next();
 })
 app.use(bodyParser.json());
@@ -33,7 +36,6 @@ app.use('/graphql', graphqlHTTP({
     })
 );
 app.use(express.static(path.join(__dirname + '/public')));
-// app.use('/api', authRoutes);
 
 mongoose.connect(mongodb_uri)
     .then(() => {

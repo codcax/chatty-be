@@ -1,21 +1,19 @@
 //Node imports
 
-module.exports.graphQLError = (gqlerror) => {
-    if (!gqlerror.originalError) {
-        return gqlerror;
+module.exports.graphQLError = (error) => {
+    if (!error.originalError) {
+        return error;
     }
-    const data = gqlerror.originalError.data;
-    const message = gqlerror.message || 'An unexpected error occurred.';
-    const code = gqlerror.originalError.code || 500;
-    const path = gqlerror.path || null;
-    return {message: message, status: code, data: data, path: path};
+    const errors = error.originalError.data;
+    const message = error.message || 'An unexpected error occurred.';
+    const code = error.originalError.code || 500;
+    const path = error.path || null;
+    return {message: message, status: code, errors: errors, path: path};
 }
 
-module.exports.errorResponse = (message, data, code) => {
+module.exports.errorResponse = (message, errors, code) => {
     const error = new Error(message);
-    if (data) {
-        error.data = data
-    }
+    error.data = errors;
     error.status = code;
     throw error;
 }

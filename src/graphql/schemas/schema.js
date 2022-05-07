@@ -23,10 +23,10 @@ input userLogin {
   password: String!
 }
 type RootQuery {
-    userLogin(input: userLogin): userAuth
+    userLogin(input: userLogin): userAuth!
 }
 type RootMutation {
-    userCreate(input: userCreate): User
+    userCreate(input: userCreate): User!
 }
 schema {
     query: RootQuery
