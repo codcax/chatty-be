@@ -11,17 +11,20 @@ module.exports.graphQLError = (error) => {
     return {message: message, status: code, errors: errors, path: path};
 }
 
-module.exports.errorResponse = (message, errors, code) => {
-    const error = new Error(message);
-    error.data = errors;
-    error.status = code;
-    throw error;
+module.exports.errorResponse = (ok, data, errors) => {
+    return {
+        ok: ok,
+        data:data,
+        errors:errors
+    }
 }
 
-module.exports.successResponse = (message, data, code) => {
+module.exports.successResponse = (ok, data, code, errors) => {
+    console.log(data)
     return {
-        message: message,
-        status: code,
-        ...data
+        ok: ok,
+        data:data,
+        code: code,
+        errors:errors
     }
 }

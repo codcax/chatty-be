@@ -7,26 +7,48 @@ type User {
   email: String!
   password: String
 }
-type userAuth {
-  _id: ID!
+
+type UserAuth {
+  userId: ID!
   token: String!
-  tokenExpiration: Int!
 }
+
+type Error {
+  message: String!
+  code: Int!
+  type: String!
+}
+
+type SignUpResponse {
+   ok: Boolean!
+   data: User
+   errors: [Error!]
+}
+
+type LoginResponse {
+   ok: Boolean!
+   data: UserAuth
+   errors: [Error!]
+}
+
 input userCreate {
   username: String!
   email: String!
   password: String!
   confirmPassword: String!
 }
+
 input userLogin {
   email: String!
   password: String!
 }
+
 type RootQuery {
-    userLogin(input: userLogin): userAuth!
+    userLogin(input: userLogin): LoginResponse!
 }
+
 type RootMutation {
-    userCreate(input: userCreate): User!
+    userSignUp(input: userCreate): SignUpResponse!
 }
 schema {
     query: RootQuery
