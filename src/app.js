@@ -2,7 +2,12 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const {graphqlHTTP} = require('express-graphql');
 const path = require('path');
+
+const graphqlSchema = require('./graphql/schemas/schema');
+const graphqlResolver = require('./graphql/resolvers/resolvers');
+const {graphQLError} = require('./utils/response');
 
 const app = express();
 
@@ -15,12 +20,22 @@ app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', process.env.APIURL);
     res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
     res.setHeader('Access-Control-Allow-Method', 'GET, POST, PATCH, DELETE, PUT, OPTIONS');
+    if(req.method === 'OPTIONS'){
+        return res.sendStatus(200);
+    }
     next();
 })
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json());
+app.use('/graphql', graphqlHTTP({
+        schema: graphqlSchema,
+        rootValue: graphqlResolver,
+        graphiql: true,
+        customFormatErrorFn(err) {
+            return graphQLError(err);
+        }
+    })
+);
 app.use(express.static(path.join(__dirname + '/public')));
-
-// const server = app.listen(port);
 
 mongoose.connect(mongodb_uri)
     .then(() => {
