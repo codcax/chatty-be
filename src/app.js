@@ -18,9 +18,9 @@ const port = process.env.PORT;
 //Middlewares
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', process.env.APIURL);
-    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
     res.setHeader('Access-Control-Allow-Method', 'GET, POST, PATCH, DELETE, PUT, OPTIONS');
-    if(req.method === 'OPTIONS'){
+    if (req.method === 'OPTIONS') {
         return res.sendStatus(200);
     }
     next();
