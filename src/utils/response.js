@@ -20,7 +20,6 @@ module.exports.errorResponse = (ok, data, errors) => {
 }
 
 module.exports.successResponse = (ok, data, code, errors) => {
-    console.log(data)
     return {
         ok: ok,
         data:data,
