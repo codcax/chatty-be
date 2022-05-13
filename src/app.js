@@ -1,15 +1,32 @@
 //Node imports
 const express = require('express');
 const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
-const {graphqlHTTP} = require('express-graphql');
 const path = require('path');
+const {ApolloServer} = require('apollo-server-express')
 
-const graphqlSchema = require('./graphql/schemas/schema');
-const graphqlResolver = require('./graphql/resolvers/resolvers');
+const typeDefs = require('./graphql/schemas/schemas');
+const resolvers = require('./graphql/resolvers/resolvers');
 const {graphQLError} = require('./utils/response');
+const {ApolloServerPluginLandingPageDisabled} = require('apollo-server-core');
 
 const app = express();
+const startApolloServer = async function startApolloServer(typeDefs, resolvers) {
+    const apolloServer = new ApolloServer({
+        typeDefs,
+        resolvers,
+        cors: false,
+        graphiql: true,
+        csrfPrevention: false,
+        plugins: [
+            ApolloServerPluginLandingPageDisabled(),
+        ],
+        formatError: (err) => {
+            return graphQLError(err);
+        }
+    });
+    await apolloServer.start();
+    apolloServer.applyMiddleware({app, path: '/graphql'});
+}
 
 //.env constants
 const mongodb_uri = process.env.MONGODB_URI;
@@ -24,17 +41,9 @@ app.use((req, res, next) => {
         return res.sendStatus(200);
     }
     next();
-})
-app.use(bodyParser.json());
-app.use('/graphql', graphqlHTTP({
-        schema: graphqlSchema,
-        rootValue: graphqlResolver,
-        graphiql: true,
-        customFormatErrorFn(err) {
-            return graphQLError(err);
-        }
-    })
-);
+});
+
+startApolloServer(typeDefs, resolvers);
 app.use(express.static(path.join(__dirname + '/public')));
 
 mongoose.connect(mongodb_uri)
