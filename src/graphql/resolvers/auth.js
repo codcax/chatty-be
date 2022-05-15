@@ -93,7 +93,11 @@ module.exports = {
                 const user = new User({
                     email: email,
                     username: username,
-                    password: hashedPassword
+                    password: hashedPassword,
+                    status: {
+                        mode: 'Offline'
+                    },
+
                 });
                 const userData = await user.save();
                 if (!userData) {

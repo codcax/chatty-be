@@ -19,7 +19,26 @@ const userSchema = new Schema({
         required: true
     },
     resetToken: String,
-    resetTokenExpiration: Date
+    resetTokenExpiration: Date,
+    status: {
+        mode: {
+            type: String,
+            enum: ['Online', 'Offline', 'Idle', 'Do Not Disturb', 'Invisible'],
+            default: 'Offline'
+        },
+        duration: {
+            type: Number
+        },
+        setTime: {
+            type: Date
+        }
+    },
+    avatar: {
+        type: String
+    },
+    description: {
+        type: String
+    }
 });
 
 module.exports = mongoose.model('User', userSchema);
