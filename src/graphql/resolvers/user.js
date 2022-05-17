@@ -20,7 +20,7 @@ module.exports = {
                 };
 
                 const userId = context.userId;
-                const user = await User.findById(userId).select({'password': false, '_id': false});
+                const user = await User.findById(userId).select({'password': false, '_id': false, 'isLoggedIn': false, 'isAccountDisabled': false});
                 if (!user) {
                     return errorResponse(false, null, [{
                         type: 'authenticate',

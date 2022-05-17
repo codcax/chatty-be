@@ -2,27 +2,25 @@ const {gql} = require('apollo-server-express');
 
 module.exports = gql`
     type User {
-        username: String
-        email: String
-        status: Status
+        username: String!
+        email: String!
+        status: Status!
         avatar: String
         description: String
+        phoneNumber: String
     }
 
     type Status{
-        mode: String
+        mode: String!
+        tagline: String!
         duration: Int
         setTime: String
     }
 
     type GetUserResponse {
-        ok: Boolean
+        ok: Boolean!
         data: User
-        errors: [Error]
-    }
-
-    input userId {
-        userId: String
+        errors: [Error!]
     }
     
     extend type Query {

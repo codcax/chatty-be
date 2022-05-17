@@ -20,11 +20,16 @@ const userSchema = new Schema({
     },
     resetToken: String,
     resetTokenExpiration: Date,
+    isLoggedIn: Boolean,
+    isAccountDisabled: Boolean,
     status: {
         mode: {
             type: String,
             enum: ['Online', 'Offline', 'Idle', 'Do Not Disturb', 'Invisible'],
             default: 'Offline'
+        },
+        tagline:{
+          type: String
         },
         duration: {
             type: Number
