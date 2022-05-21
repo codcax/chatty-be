@@ -16,6 +16,22 @@ module.exports = gql`
         duration: Int
         setTime: String
     }
+    
+    input UpdateUsername{
+        newUsername: String!
+        password: String!
+    }
+
+    input UpdateUserEmail{
+        newEmail: String!
+        password: String!
+    }
+    
+    input UpdateUserPassword{
+        newPassword: String!
+        newConfirmPassword: String!
+        password: String!
+    }
 
     type GetUserResponse {
         ok: Boolean!
@@ -23,7 +39,19 @@ module.exports = gql`
         errors: [Error!]
     }
     
+    type UpdateUsernameResponse {
+        ok: Boolean!
+        data: User
+        errors: [Error!]
+    }
+    
     extend type Query {
         getUser: GetUserResponse!
+    }
+    
+    extend type Mutation {
+        updateUsername(input: UpdateUsername!): UpdateUsernameResponse!
+        updateUserEmail(input: UpdateUserEmail!): User!
+        updateUserPassword(input: UpdateUserPassword!): User!
     }
 `
