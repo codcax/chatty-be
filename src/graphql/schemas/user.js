@@ -22,12 +22,12 @@ module.exports = gql`
         password: String!
     }
 
-    input UpdateUserEmail{
+    input UpdateEmail{
         newEmail: String!
         password: String!
     }
     
-    input UpdateUserPassword{
+    input UpdatePassword{
         newPassword: String!
         newConfirmPassword: String!
         password: String!
@@ -41,7 +41,16 @@ module.exports = gql`
     
     type UpdateUsernameResponse {
         ok: Boolean!
-        data: User
+        errors: [Error!]
+    }
+
+    type UpdateEmailResponse {
+        ok: Boolean!
+        errors: [Error!]
+    }
+
+    type UpdatePasswordResponse {
+        ok: Boolean!
         errors: [Error!]
     }
     
@@ -51,7 +60,7 @@ module.exports = gql`
     
     extend type Mutation {
         updateUsername(input: UpdateUsername!): UpdateUsernameResponse!
-        updateUserEmail(input: UpdateUserEmail!): User!
-        updateUserPassword(input: UpdateUserPassword!): User!
+        updateEmail(input: UpdateEmail!): UpdateEmailResponse!
+        updatePassword(input: UpdatePassword!): UpdatePasswordResponse!
     }
 `
