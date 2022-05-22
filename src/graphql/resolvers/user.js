@@ -189,7 +189,7 @@ module.exports = {
 
                 if (!validator.isLength(newPassword, {min: 8, max: 32}) ||
                     !validator.matches(newPassword, '^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\\W).{8,32}$')) {
-                    errors.push({type: 'password', message: 'Password is invalid.', code: 422});
+                    errors.push({type: 'newPassword', message: 'At least 8 chars min and 32 chars max.', code: 422});
                 }
 
                 if (newPassword !== newConfirmPassword) {
