@@ -46,6 +46,16 @@ module.exports = {
                     }]);
                 }
 
+                const logInUser = await user.update({isLoggedIn: true});
+
+                if(!logInUser) {
+                    return errorResponse(false, null, [{
+                        type: 'authenticate',
+                        message: 'Failed to log in.',
+                        code: 401
+                    }]);
+                }
+
                 const signedToken = await jwt.sign({email: user.email, userId: user._id}, 'random', {expiresIn: '1hr'});
                 return successResponse(true, {token: signedToken, userId: user._id.toString()}, 200)
 
@@ -93,7 +103,15 @@ module.exports = {
                 const user = new User({
                     email: email,
                     username: username,
-                    password: hashedPassword
+                    password: hashedPassword,
+                    status: {
+                        mode: 'Offline',
+                        tagline:'Online'
+                    },
+                    description: 'Hey, check out my profile!',
+                    phoneNumber: '',
+                    isLoggedIn: false,
+                    isAccountDisabled: false
                 });
                 const userData = await user.save();
                 if (!userData) {

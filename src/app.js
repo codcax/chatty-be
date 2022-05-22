@@ -8,6 +8,7 @@ const typeDefs = require('./graphql/schemas/schemas');
 const resolvers = require('./graphql/resolvers/resolvers');
 const {graphQLError} = require('./utils/response');
 const {ApolloServerPluginLandingPageDisabled} = require('apollo-server-core');
+const jwt = require("jsonwebtoken");
 
 const app = express();
 const startApolloServer = async function startApolloServer(typeDefs, resolvers) {
@@ -17,6 +18,14 @@ const startApolloServer = async function startApolloServer(typeDefs, resolvers) 
         cors: false,
         graphiql: true,
         csrfPrevention: false,
+        context: ({req}) => {
+            const token = req.headers.authorization || '';
+            if (token) {
+                verifiedToken = jwt.verify(token.split(' ')[1], 'random');
+                userId = verifiedToken.userId;
+                return {userId};
+            }
+        },
         plugins: [
             ApolloServerPluginLandingPageDisabled(),
         ],
