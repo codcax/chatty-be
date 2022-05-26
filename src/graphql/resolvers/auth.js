@@ -56,8 +56,8 @@ module.exports = {
                     }]);
                 }
 
-                const signedToken = await jwt.sign({email: user.email, userId: user._id}, 'random', {expiresIn: '1hr'});
-                return successResponse(true, {token: signedToken, userId: user._id.toString()}, 200)
+                const signedToken = await jwt.sign({email: user.email, userId: user._id}, 'random', {expiresIn: '1h'});
+                return successResponse(true, {token: signedToken, userId: user._id.toString(), expiresIn: 3600}, 200)
 
             } catch (error) {
                 throw error;

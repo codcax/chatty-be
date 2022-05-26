@@ -4,6 +4,7 @@ module.exports = gql`
     type UserAuth {
         userId: ID!
         token: String!
+        expiresIn: Int!
     }
 
     type SignUpResponse {
