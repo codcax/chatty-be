@@ -39,17 +39,7 @@ module.exports = gql`
         errors: [Error!]
     }
     
-    type UpdateUsernameResponse {
-        ok: Boolean!
-        errors: [Error!]
-    }
-
-    type UpdateEmailResponse {
-        ok: Boolean!
-        errors: [Error!]
-    }
-
-    type UpdatePasswordResponse {
+    type UpdateUserResponse {
         ok: Boolean!
         errors: [Error!]
     }
@@ -59,8 +49,8 @@ module.exports = gql`
     }
     
     extend type Mutation {
-        updateUsername(input: UpdateUsername!): UpdateUsernameResponse!
-        updateEmail(input: UpdateEmail!): UpdateEmailResponse!
-        updatePassword(input: UpdatePassword!): UpdatePasswordResponse!
+        updateUsername(input: UpdateUsername!): UpdateUserResponse!
+        updateEmail(input: UpdateEmail!): UpdateUserResponse!
+        updatePassword(input: UpdatePassword!): UpdateUserResponse!
     }
 `

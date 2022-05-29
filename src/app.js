@@ -2,7 +2,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
-const {ApolloServer} = require('apollo-server-express')
+const {ApolloServer} = require('apollo-server-express');
+const graphqlUploadExpress = require('graphql-upload/graphqlUploadExpress.js');
 
 const typeDefs = require('./graphql/schemas/schemas');
 const resolvers = require('./graphql/resolvers/resolvers');
@@ -52,8 +53,11 @@ app.use((req, res, next) => {
     next();
 });
 
-startApolloServer(typeDefs, resolvers);
+app.use(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }));
 app.use(express.static(path.join(__dirname + '/public')));
+
+
+startApolloServer(typeDefs, resolvers);
 
 mongoose.connect(mongodb_uri)
     .then(() => {

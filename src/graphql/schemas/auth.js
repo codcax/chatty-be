@@ -9,7 +9,6 @@ module.exports = gql`
 
     type SignUpResponse {
         ok: Boolean!
-        data: String
         errors: [Error!]
     }
 

@@ -1,6 +1,5 @@
 //Node imports
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
 const validator = require('validator');
 
 //Custom imports
@@ -18,7 +17,6 @@ module.exports = {
                         code: 403
                     }]);
                 }
-                ;
 
                 const userId = context.userId;
                 const user = await User.findById(userId).select({

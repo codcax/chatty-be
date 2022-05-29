@@ -1,6 +1,9 @@
 //Node imports
 const mongoose = require('mongoose');
 
+//Custom imports
+const File = require('./file');
+
 //Define constants
 const Schema = mongoose.Schema;
 
@@ -28,8 +31,8 @@ const userSchema = new Schema({
             enum: ['Online', 'Offline', 'Idle', 'Do Not Disturb', 'Invisible'],
             default: 'Offline'
         },
-        tagline:{
-          type: String
+        tagline: {
+            type: String
         },
         duration: {
             type: Number
@@ -43,7 +46,18 @@ const userSchema = new Schema({
     },
     description: {
         type: String
-    }
+    },
+    folder: {
+        public: {
+            type: String || null
+        },
+        data: {
+            type: String || null
+        }
+    },
+    files: [{
+        type: Schema.Types.ObjectId, ref: 'File'
+    }]
 });
 
 module.exports = mongoose.model('User', userSchema);
