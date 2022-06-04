@@ -4,6 +4,7 @@ const {mergeResolvers} = require('@graphql-tools/merge');
 const indexResolver = require('./index');
 const authResolver = require('./auth');
 const userResolver = require('./user');
-const rootResolver = [indexResolver,authResolver,userResolver];
+const fileResolver = require('./file');
+const rootResolver = [indexResolver,authResolver,userResolver, fileResolver];
 
 module.exports = mergeResolvers(rootResolver);

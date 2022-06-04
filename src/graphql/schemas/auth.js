@@ -4,11 +4,11 @@ module.exports = gql`
     type UserAuth {
         userId: ID!
         token: String!
+        expiresIn: Int!
     }
 
     type SignUpResponse {
         ok: Boolean!
-        data: String
         errors: [Error!]
     }
 

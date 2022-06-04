@@ -6,10 +6,11 @@ const validator = require('validator');
 //Custom imports
 const User = require('../../models/user');
 const {errorResponse, successResponse} = require('../../utils/response');
+const {createDataFolder, createPublicFolder} = require('../../utils/folder');
 
 module.exports = {
     Query: {
-        userLogin: async function (_,args) {
+        userLogin: async function (_, args) {
             try {
                 const email = args.input.email;
                 const password = args.input.password;
@@ -48,7 +49,7 @@ module.exports = {
 
                 const logInUser = await user.update({isLoggedIn: true});
 
-                if(!logInUser) {
+                if (!logInUser) {
                     return errorResponse(false, null, [{
                         type: 'authenticate',
                         message: 'Failed to log in.',
@@ -56,8 +57,8 @@ module.exports = {
                     }]);
                 }
 
-                const signedToken = await jwt.sign({email: user.email, userId: user._id}, 'random', {expiresIn: '1hr'});
-                return successResponse(true, {token: signedToken, userId: user._id.toString()}, 200)
+                const signedToken = await jwt.sign({email: user.email, userId: user._id}, 'random', {expiresIn: '1h'});
+                return successResponse(true, {token: signedToken, userId: user._id.toString(), expiresIn: 3600}, 200)
 
             } catch (error) {
                 throw error;
@@ -65,7 +66,7 @@ module.exports = {
         }
     },
     Mutation: {
-        userSignUp: async function (_,args) {
+        userSignUp: async function (_, args) {
             try {
                 const username = args.input.username;
                 const email = args.input.email;
@@ -106,13 +107,20 @@ module.exports = {
                     password: hashedPassword,
                     status: {
                         mode: 'Offline',
-                        tagline:'Online'
+                        tagline: 'Online'
                     },
+                    avatar: '/public/images/default/avatar.png',
                     description: 'Hey, check out my profile!',
                     phoneNumber: '',
                     isLoggedIn: false,
-                    isAccountDisabled: false
+                    isAccountDisabled: false,
+                    folder: {
+                        public: null,
+                        data: null
+                    },
+                    files: []
                 });
+
                 const userData = await user.save();
                 if (!userData) {
                     return errorResponse(false, null, [{
@@ -122,7 +130,19 @@ module.exports = {
                     }]);
                 }
 
-                return successResponse(true, userData._doc, 201);
+                const createDataDir = await createDataFolder(userData._id, 'user', userData._id);
+                const createPublicDir = await createPublicFolder(userData._id, 'user', userData._id);
+                if (createDataDir && createPublicDir) {
+                    await User.findByIdAndUpdate(userData._id, {
+                            folder: {
+                                data: createDataDir,
+                                public: createPublicDir
+                            }
+                        }
+                    );
+                }
+
+                return successResponse(true, null, 201);
             } catch (error) {
                 throw error;
             }
